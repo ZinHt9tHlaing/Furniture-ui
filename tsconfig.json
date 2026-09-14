@@ -1,0 +1,33 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "compilerOptions": {
+    "target": "ES2017",
+    "moduleResolution": "bundler",
+    "allowJs": true,
+    "skipLibCheck": true,
+    /* Linting */
+    "strict": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "baseUrl": ".",
+    /* Paths */
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "resolvePackageJsonImports": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
