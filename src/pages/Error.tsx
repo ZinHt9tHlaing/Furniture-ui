@@ -1,35 +1,48 @@
+import { Link } from "react-router";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import Header from "@/components/layouts/Header";
+import { Icons } from "@/components/Icons";
+import Footer from "@/components/layouts/Footer";
 import SEOHead from "@/components/MetaTagsHead/SEOHead";
-import { Link, useRouteError, isRouteErrorResponse } from "react-router";
 
-function ErrorPage() {
-  const error = useRouteError();
-
-  let title = "404 - Page Not Found";
-  let description = "Sorry, we couldn't find the page you're looking for.";
-
-  if (isRouteErrorResponse(error)) {
-    title = `${error.status} - ${error.statusText}`;
-    description = error.data?.message || description;
-  }
-
+export default function ErrorPage() {
   return (
-    <>
+    <div className="flex min-h-screen flex-col overflow-hidden">
       <SEOHead title="Error" description="Error Page" />
-      <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-6 py-12 text-center">
-        <h1 className="text-6xl font-bold text-gray-800">{title}</h1>
-        <p className="mt-4 max-w-md text-lg text-gray-600">{description}</p>
+      <Header />
+      <main className="mx-auto my-32 flex flex-1 items-center">
+        <Card className="w-[350px] max-w-md rounded-2xl py-3 shadow-lg md:w-[500px] lg:w-[500px]">
+          <CardHeader className="flex flex-col items-center">
+            <Icons.exclamation
+              className="mb-2 size-12 text-red-500"
+              aria-hidden="true"
+            />
+            <CardTitle className="text-center text-2xl font-bold">
+              Page Not Found
+            </CardTitle>
+          </CardHeader>
 
-        <div className="mt-6 flex gap-4">
-          <Link
-            to="/"
-            className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700"
-          >
-            Go back home
-          </Link>
-        </div>
-      </div>
-    </>
+          <CardContent>
+            <p className="text-center text-gray-600">
+              The page you’re looking for doesn’t exist or has been moved.
+            </p>
+          </CardContent>
+
+          <CardFooter className="flex justify-center">
+            <Button className="rounded-xl bg-red-500 shadow-md duration-200 hover:bg-red-600 active:scale-90">
+              <Link to="/">Go Back Home</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </main>
+      <Footer />
+    </div>
   );
 }
-
-export default ErrorPage;
