@@ -12,20 +12,41 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
+import { useEffect, useState } from "react";
 
 interface MobileNavigationProps {
   items?: MainNavItem[];
 }
 
 const MobileNavigation = ({ items }: MobileNavigationProps) => {
+  const [isDesktop, setIsDesktop] = useState(false);
+  const mediaQuery = "(min-width: 1024px)";
+
+  // check if screen width is 1024px or more
+  useEffect(() => {
+    function onChange(event: MediaQueryListEvent) {
+      setIsDesktop(event.matches); // true if screen width is 1024px or more
+    }
+
+    const result = matchMedia(mediaQuery); // true if screen width is 1024px or more
+
+    result.addEventListener("change", onChange);
+
+    // cleanup (this function is called when the component unmounts)
+    return () => {
+      result.removeEventListener("change", onChange);
+    };
+  }, [mediaQuery]);
+
+  if (isDesktop) {
+    return null;
+  }
+
   return (
     <div className="lg:hidden">
       <Sheet>
