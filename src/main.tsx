@@ -4,11 +4,14 @@ import "./index.css";
 import { RouterProvider } from "react-router";
 import router from "./routes/router";
 import { HelmetProvider } from "react-helmet-async";
+import { ThemeProvider } from "./components/theme/theme-provider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <HelmetProvider>
-      <RouterProvider router={router} />
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </HelmetProvider>
-  </StrictMode>,
+  </StrictMode>
 );

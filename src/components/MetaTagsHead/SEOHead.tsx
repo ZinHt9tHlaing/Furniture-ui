@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import { Helmet } from "react-helmet-async";
 
 interface SEOHeadProps {
@@ -10,12 +11,12 @@ interface SEOHeadProps {
 
 function SEOHead({
   title,
-  description = "Furniture Store",
+  description = "Furniture Shop",
   image = "/default-og-image.jpg",
   type = "website",
   url = typeof window !== "undefined" ? window.location.href : "", // URL of the current page for SSR and CSR
 }: SEOHeadProps) {
-  const fullTitle = `${title} | Furniture Store`;
+  const fullTitle = `${title} | ${siteConfig.name}`;
 
   return (
     <Helmet>

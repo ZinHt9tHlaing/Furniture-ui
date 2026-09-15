@@ -3,7 +3,7 @@ import SEOHead from "@/components/MetaTagsHead/SEOHead";
 const HomePage = () => {
   return (
     <div>
-      <SEOHead title="Home" description="Furniture UI" />
+      <SEOHead title="Home" />
       Home
     </div>
   );
