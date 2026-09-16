@@ -55,7 +55,7 @@ const MobileNavigation = ({ items }: MobileNavigationProps) => {
             <Button
               variant="ghost"
               size={"icon"}
-              className="ml-4 size-5 cursor-pointer duration-200 active:scale-95"
+              className="ml-3 md:ml-0 size-5 cursor-pointer duration-200 active:scale-95"
             >
               <Icons.menu aria-hidden="true" />
               {/* sr => screen reader */}

@@ -5,7 +5,7 @@ import NewLetterForm from "../new-letter";
 
 const Footer = () => {
   return (
-    <footer className="ml-4 w-full border-t md:px-0 lg:ml-0 lg:px-20">
+    <footer className="ml-4 w-full border-t md:px-0 md:ml-0 lg:px-20">
       <div className="container mx-auto pt-6 pb-8 lg:py-6">
         <section className="flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-20">
           <section className="">

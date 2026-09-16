@@ -10,7 +10,7 @@ const Header = () => {
         <MainNavigation items={siteConfig.mainNav} />
         <MobileNavigation items={siteConfig.mainNav} />
 
-        <div className="mr-8 flex flex-1 items-center justify-end space-x-4 lg:mr-0">
+        <div className="mr-3 md:mr-0 flex flex-1 items-center justify-end space-x-4 lg:mr-0">
           <ModeToggle />
         </div>
       </nav>
