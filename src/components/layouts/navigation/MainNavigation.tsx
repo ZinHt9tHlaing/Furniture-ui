@@ -14,7 +14,7 @@ import { Link } from "react-router";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 import type { MainNavItem } from "@/types";
-import { Icons } from "../../Icons";
+import { Icons } from "@/components/Icons";
 
 interface MainNavigationProps {
   items?: MainNavItem[];
@@ -36,22 +36,20 @@ const MainNavigation = ({ items }: MainNavigationProps) => {
               <NavigationMenuContent>
                 <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                   <li className="row-span-3">
-                    <NavigationMenuLink
-                      render={
-                        <Link
-                          className="from-muted/50 to-muted flex size-full flex-col justify-end rounded-md bg-gradient-to-b p-6 no-underline outline-none select-none focus:shadow-md"
-                          to="/"
-                        >
-                          <Icons.logo className="size-6" aria-hidden="true" />
-                          <div className="mt-4 mb-2 text-lg font-medium">
-                            {siteConfig.name}
-                          </div>
-                          <p className="text-muted-foreground text-sm leading-tight">
-                            {siteConfig.description}
-                          </p>
-                        </Link>
-                      }
-                    />
+                    <NavigationMenuLink className="h-full">
+                      <Link
+                        className="from-muted/50 to-muted flex size-full flex-col justify-center rounded-md bg-gradient-to-b p-6 no-underline outline-none select-none focus:shadow-md"
+                        to="/"
+                      >
+                        <Icons.logo className="size-6" aria-hidden="true" />
+                        <div className="mt-4 mb-2 text-lg font-medium">
+                          {siteConfig.name}
+                        </div>
+                        <p className="text-muted-foreground text-sm leading-tight">
+                          {siteConfig.description}
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
                   </li>
                   {items[0].card.map((item, index) => (
                     <ListItem key={index} href={item.href} title={item.title}>
@@ -66,9 +64,11 @@ const MainNavigation = ({ items }: MainNavigationProps) => {
             items[0].menu.map((item, index) => (
               <NavigationMenuItem key={index}>
                 <NavigationMenuLink
+                  render={<Link to={String(item.href)} />}
                   className={navigationMenuTriggerStyle()}
-                  render={<Link to={String(item.href)}>{item.title}</Link>}
-                />
+                >
+                  {item.title}
+                </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
         </NavigationMenuList>
@@ -83,24 +83,22 @@ const ListItem = React.forwardRef<
 >(({ className, title, children, href, ...props }, ref) => {
   return (
     <li>
-      <NavigationMenuLink
-        render={
-          <Link
-            ref={ref}
-            to={String(href)}
-            className={cn(
-              "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none",
-              className
-            )}
-            {...props}
-          >
-            <div className="text-sm leading-none font-medium">{title}</div>
-            <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
-              {children}
-            </p>
-          </Link>
-        }
-      />
+      <NavigationMenuLink>
+        <Link
+          ref={ref}
+          to={String(href)}
+          className={cn(
+            "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm leading-none font-medium">{title}</div>
+          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
+            {children}
+          </p>
+        </Link>
+      </NavigationMenuLink>
     </li>
   );
 });

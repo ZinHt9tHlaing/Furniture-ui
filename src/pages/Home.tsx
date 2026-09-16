@@ -2,11 +2,15 @@ import SEOHead from "@/components/MetaTagsHead/SEOHead";
 import Title from "@/components/Title";
 import BlogCard from "@/components/blog/BlogCard";
 import { CarouselCard } from "@/components/products/CarouselCard";
+import ProductCard from "@/components/products/ProductCard";
 import { Button } from "@/components/ui/button";
 import Couch from "@/data/images/couch.png";
 import { posts } from "@/data/posts";
 import { products } from "@/data/products";
 import { Link } from "react-router";
+
+const samplePosts = posts.slice(0, 3);
+const sampleProducts = products.slice(0, 4);
 
 const HomePage = () => {
   return (
@@ -43,9 +47,21 @@ const HomePage = () => {
         {/* Carousel Section */}
         <CarouselCard products={products} />
 
+        {/* Featured Products  */}
+        <Title
+          title="Featured Products"
+          href="/products"
+          sideText="View All Products"
+        />
+        <div className="grid grid-cols-1 gap-6 px-4 md:grid-cols-2 md:px-0 lg:grid-cols-4">
+          {sampleProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+
         {/* Recent Blog  */}
         <Title title="Recent Blog" href="/blogs" sideText="View All Posts" />
-        <BlogCard posts={posts} />
+        <BlogCard posts={samplePosts} />
       </div>
     </>
   );
