@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
@@ -12,6 +11,7 @@ import { Link } from "react-router";
 import { AspectRatio } from "../ui/aspect-ratio";
 import { Button } from "../ui/button";
 import { Icons } from "../Icons";
+import { formatPrice } from "@/lib/utils";
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Product;
@@ -42,10 +42,10 @@ const ProductCard = ({ product, className }: ProductCardProps) => {
         <CardContent className="space-y-1.5">
           <CardTitle>{product.name}</CardTitle>
           <CardDescription className="line-clamp-1">
-            <span className="font-medium">${product.price}</span>
+            <span className="font-medium">{formatPrice(product.price)}</span>
             {product.discount > 0 && (
               <span className="ml-2 font-light line-through">
-                ${product.discount}
+                {formatPrice(product.discount)}
               </span>
             )}
           </CardDescription>
