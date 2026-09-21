@@ -1,3 +1,4 @@
+import BackButton from "@/components/BackButton";
 import { Icons } from "@/components/Icons";
 import SEOHead from "@/components/MetaTagsHead/SEOHead";
 import RichTextRenderer from "@/components/blog/RichTextRenderer";
@@ -21,15 +22,8 @@ const BlogsDetailPage = () => {
       <div className="container mx-auto px-4 md:px-0">
         <section className="flex flex-col lg:flex-row">
           <section className="w-full lg:w-3/4 lg:pr-16">
-            <Button
-              variant="outline"
-              className="group mt-8 mb-6 duration-200 active:scale-90"
-            >
-              <Link to="/blogs" className="inline-flex items-center gap-2">
-                <Icons.arrowLeft className="h-4 w-4 duration-200 group-hover:-translate-x-1" />
-                <span>All Posts</span>
-              </Link>
-            </Button>
+            {/* back button */}
+            <BackButton href="/blogs" label="All Posts" />
 
             {postDetailData ? (
               <>
