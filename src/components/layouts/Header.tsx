@@ -2,6 +2,8 @@ import { siteConfig } from "@/config/site";
 import MainNavigation from "./navigation/MainNavigation";
 import MobileNavigation from "./navigation/MobileNavigation";
 import { ModeToggle } from "../theme/mode-toggle";
+import AuthDropDown from "./auth/AuthDropDown";
+import { User } from "@/data/user";
 
 const Header = () => {
   return (
@@ -10,8 +12,9 @@ const Header = () => {
         <MainNavigation items={siteConfig.mainNav} />
         <MobileNavigation items={siteConfig.mainNav} />
 
-        <div className="mr-3 md:mr-0 flex flex-1 items-center justify-end space-x-4 lg:mr-0">
+        <div className="mr-3 flex flex-1 items-center justify-end space-x-4 md:mr-0 lg:mr-0">
           <ModeToggle />
+          <AuthDropDown user={User} />
         </div>
       </nav>
     </header>
