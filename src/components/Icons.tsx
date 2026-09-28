@@ -14,6 +14,7 @@ import {
   TrashIcon,
 } from "@radix-ui/react-icons";
 import { AlignLeft, SendHorizontal } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
@@ -49,4 +50,5 @@ export const Icons = {
   gear: GearIcon,
   exit: ExitIcon,
   trash: TrashIcon,
+  google: FcGoogle,
 };

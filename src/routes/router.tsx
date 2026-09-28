@@ -19,6 +19,8 @@ import ProductPage from "@/pages/products/Product";
 import ProductDetailPage from "@/pages/products/ProductDetail";
 import ProductRootLayout from "@/pages/products/ProductRootLayout";
 import SuspenseFallback from "@/components/loading/SuspenseFallback";
+import LoginPage from "@/pages/auth/Login";
+import RegisterPage from "@/pages/auth/Register";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +65,14 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
   },
 ]);
 
