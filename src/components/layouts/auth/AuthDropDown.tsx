@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import type { User } from "@/types/user-type";
 import { Icons } from "@/components/Icons";
 
@@ -13,12 +13,40 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useLogoutMutation } from "@/features/hooks/auth.queries";
+import { AxiosError } from "axios";
+import useAuthGuardStore from "@/store/auth/authGuardStore";
 
 interface UserProps {
   user: User;
 }
 
 const AuthDropDown = ({ user }: UserProps) => {
+  const navigate = useNavigate();
+  const clearUserInfo = useAuthGuardStore((state) => state.clearUserInfo);
+  const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
+
+  const logoutHandler = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        clearUserInfo();
+        toast.success("Logout successful");
+        navigate("/login", { replace: true });
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError) {
+          console.error("logout error : ", error.response?.data?.message);
+          toast.error(error.response?.data?.message);
+          return;
+        }
+        console.error("logout error : ", error);
+        toast.error(error.message);
+      },
+    });
+  };
+
   if (!user) {
     return (
       <Button size={"sm"}>
@@ -36,13 +64,24 @@ const AuthDropDown = ({ user }: UserProps) => {
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button variant="secondary" className={"size-8 rounded-full"} />
+          <Button
+            variant="secondary"
+            disabled={isLoggingOut}
+            className="relative size-8 rounded-full disabled:cursor-not-allowed disabled:opacity-60"
+          />
         }
       >
         <Avatar className={"size-8"}>
           <AvatarImage src={user.imageUrl} alt={user.username ?? ""} />
           <AvatarFallback>{initialName}</AvatarFallback>
         </Avatar>
+
+        {/* loading state */}
+        {isLoggingOut && (
+          <div className="bg-background/80 absolute flex size-8 items-center justify-center rounded-full backdrop-blur-xs">
+            <Loader2 className="text-primary size-5 animate-spin" />
+          </div>
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent className={"w-50"} align="end">
         <DropdownMenuGroup>
@@ -87,18 +126,31 @@ const AuthDropDown = ({ user }: UserProps) => {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          render={
-            <Link to="/login" className="text-red-600">
-              <Icons.exit
-                className="mr-2 size-4 text-red-600 transition-all duration-300 group-hover:translate-x-1 group-hover:scale-95"
+          variant="destructive"
+          disabled={isLoggingOut}
+          onClick={logoutHandler}
+          className="group flex cursor-pointer gap-4 focus:bg-red-500 focus:text-red-100 dark:focus:bg-red-600"
+        >
+          {isLoggingOut ? (
+            <>
+              <Loader2
+                className="size-4 animate-spin text-red-600 transition-all duration-200 ease-in-out group-hover:translate-x-1 group-hover:scale-95 disabled:cursor-not-allowed disabled:opacity-50 dark:text-red-500"
                 aria-hidden="true"
               />
-              Log out
-              {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
-            </Link>
-          }
-          className="group"
-        />
+              <span className="text-red-600 dark:text-red-500">
+                Logging out...
+              </span>
+            </>
+          ) : (
+            <>
+              <Icons.exit
+                className="size-4 text-red-600 transition-all duration-200 ease-in-out group-hover:translate-x-1 group-hover:scale-95 dark:text-red-500"
+                aria-hidden="true"
+              />
+              <span className="text-red-600 dark:text-red-500">Log out</span>
+            </>
+          )}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

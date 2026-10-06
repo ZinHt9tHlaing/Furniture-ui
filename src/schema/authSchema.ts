@@ -10,14 +10,18 @@ export const loginSchema = z
       .regex(/^\d+$/, "Phone number must be numbers."),
     password: z
       .string()
-      .min(1, "Password is required.")
-      .min(6, "Password must be 6 digits.")
-      .regex(/^\d+$/, "Password must be numbers."),
+      .min(6, "Password must be 6 characters.")
+      .regex(
+        /^[a-zA-Z0-9]+$/,
+        "Password must contain only letters and numbers."
+      ),
     confirmPassword: z
       .string()
-      .min(1, "Password is required.")
-      .min(6, "Password must be 6 digits.")
-      .regex(/^\d+$/, "Password must be numbers."),
+      .min(6, "Password must be 6 characters.")
+      .regex(
+        /^[a-zA-Z0-9]+$/,
+        "Password must contain only letters and numbers."
+      ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match!",
@@ -42,14 +46,14 @@ export const registerWithEmailSchema = z.object({
   phone: z
     .string()
     .min(1, "Phone number is required.")
-    .min(5, "Phone number is too short.")
+    .min(7, "Phone number is too short.")
     .max(12, "Phone number is too long.")
     .regex(/^\d+$/, "Phone number must be numbers."),
   password: z
     .string()
-    .min(1, "Password is required.")
     .min(6, "Password must be 6 digits.")
-    .regex(/^\d+$/, "Password must be numbers."),
+    .min(6, "Password must be 6 digits."),
+  // .regex(/^\d+$/, "Password must be numbers."),
 });
 
 export const registerWithPhoneSchema = z
@@ -62,14 +66,14 @@ export const registerWithPhoneSchema = z
       .regex(/^\d+$/, "Phone number must be numbers."),
     password: z
       .string()
-      .min(1, "Password is required.")
       .min(6, "Password must be 6 digits.")
-      .regex(/^\d+$/, "Password must be numbers."),
+      .min(6, "Password must be 6 digits."),
+    // .regex(/^\d+$/, "Password must be numbers."),
     confirmPassword: z
       .string()
       .min(1, "Password is required.")
-      .min(6, "Password must be 6 digits.")
-      .regex(/^\d+$/, "Password must be numbers."),
+      .min(6, "Password must be 6 digits."),
+    // .regex(/^\d+$/, "Password must be numbers."),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match!",
@@ -84,3 +88,33 @@ export const registerSchema = z.object({
     .max(12, "Phone number is too long.")
     .regex(/^\d+$/, "Phone number must be numbers."),
 });
+
+export const otpSchema = z.object({
+  otp: z
+    .string()
+    .length(6, "Your one-time password must be 6 characters.")
+    .regex(/^\d+$/, "Password must be numbers."),
+});
+
+export const confirmPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      // .length(6, "Password must be 6 characters.") // cleaner than .min(6).max(6)
+      .min(6, "Password must be 6 characters.")
+      .regex(
+        /^[a-zA-Z0-9]+$/,
+        "Password must contain only letters and numbers."
+      ),
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be 6 characters.")
+      .regex(
+        /^[a-zA-Z0-9]+$/,
+        "Confirm Password must contain only letters and numbers."
+      ),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match!",
+    path: ["confirmPassword"],
+  });

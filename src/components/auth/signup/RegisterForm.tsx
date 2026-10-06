@@ -20,12 +20,19 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
-import { Icons } from "../Icons";
+import { Link, useActionData, useNavigation, useSubmit } from "react-router";
+import { Icons } from "../../Icons";
 
 type formInput = z.infer<typeof registerSchema>;
 
 const RegisterForm = ({ className, ...props }: React.ComponentProps<"div">) => {
+  const submit = useSubmit();
+  const navigate = useNavigation();
+  const actionData = useActionData() as {
+    error?: string;
+    message?: string;
+  };
+
   const form = useForm<formInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -33,8 +40,10 @@ const RegisterForm = ({ className, ...props }: React.ComponentProps<"div">) => {
     },
   });
 
-  const onSubmit = async (data: formInput) => {
-    console.log("data", data);
+  const isSubmitting = navigate.state === "submitting";
+
+  const onSubmit = async (values: formInput) => {
+    submit(values, { method: "post", action: "." });
   };
 
   return (
@@ -74,21 +83,26 @@ const RegisterForm = ({ className, ...props }: React.ComponentProps<"div">) => {
               />
             </FieldGroup>
 
+            {actionData && (
+              <p className="mt-2 text-xs font-medium text-red-400">
+                {actionData.message}
+              </p>
+            )}
+
             <div className="grid gap-4">
               <Button
                 type="submit"
-                // disabled={isSubmitting}
-                className="mt-4 w-full cursor-pointer duration-200 active:ring-1 active:ring-gray-500"
+                disabled={isSubmitting}
+                className="mt-4 w-full cursor-pointer duration-200 active:ring-1 active:ring-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {/* {isSubmitting ? (
+                {isSubmitting ? (
                   <>
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                     <span className="animate-pulse">Submitting...</span>
                   </>
                 ) : (
                   "Sign Up"
-                )} */}
-                Sign Up
+                )}
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-background text-muted-foreground relative z-10 px-2">

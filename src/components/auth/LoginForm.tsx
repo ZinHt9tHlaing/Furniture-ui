@@ -20,22 +20,61 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Icons } from "../Icons";
+import PasswordInput from "./password-input";
+import { toast } from "sonner";
+import { useLoginMutation } from "@/features/hooks/auth.queries";
+import { AxiosError } from "axios";
+import useAuthGuardStore from "@/store/auth/authGuardStore";
 
 type formInput = z.infer<typeof loginSchema>;
 
 const LoginForm = ({ className, ...props }: React.ComponentProps<"div">) => {
+  const navigate = useNavigate();
+  const setUserInfo = useAuthGuardStore((state) => state.setUserInfo);
+
+  const {
+    mutateAsync: loginMutation,
+    isPending,
+    isError,
+    error: loginError,
+  } = useLoginMutation();
+
+  // const isSubmitting = navigation.state === "submitting";
+
   const form = useForm<formInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       phone: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (data: formInput) => {
-    console.log("data", data);
+  const onSubmit = async (values: formInput) => {
+    // submit(values, { method: "post", action: "/login" });
+    await loginMutation(values, {
+      onSuccess: (res) => {
+        if (res?.userId) {
+          setUserInfo({ userId: res.userId });
+          form.reset();
+          toast.success(res.message || "Logged in successfully");
+          navigate("/", { replace: true });
+        }
+      },
+      onError: (error) => {
+        if (error instanceof AxiosError) {
+          const message =
+            error.response?.data?.message || "Invalid credentials";
+          console.error("login error : ", message);
+          toast.error(message);
+          return;
+        }
+        console.error("login error : ", error);
+        toast.error(error.message);
+      },
+    });
   };
 
   return (
@@ -46,7 +85,17 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<"div">) => {
           <CardDescription>
             Enter your phone number below to login to your account
           </CardDescription>
+
+          {/* Error message display */}
+          {isError && (
+            <p className="mt-2 rounded-md bg-red-50 p-2 text-center text-xs font-medium text-red-600">
+              {loginError instanceof AxiosError
+                ? loginError.response?.data?.message
+                : loginError?.message}
+            </p>
+          )}
         </CardHeader>
+
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
@@ -83,31 +132,54 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<"div">) => {
                     data-invalid={fieldState.invalid}
                     className="space-y-1"
                   >
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <PasswordInput
+                      id="password"
+                      aria-invalid={fieldState.invalid}
+                      inputMode="numeric" // show numeric keyboard on mobile
+                      // minLength={6}
+                      // maxLength={6}
+                      placeholder="*********"
+                      autoComplete="off"
+                      {...field}
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              {/* confirm password */}
+              <Controller
+                name="confirmPassword"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field
+                    data-invalid={fieldState.invalid}
+                    className="space-y-1"
+                  >
                     <div className="flex items-center">
-                      <FieldLabel htmlFor="password">Password</FieldLabel>
+                      <FieldLabel htmlFor="confirmPassword">
+                        Confirm Password
+                      </FieldLabel>
                       <Link
                         to="/forgot-password"
-                        className="ml-auto inline-block text-sm underline underline-offset-4"
+                        className="ml-auto inline-block text-sm hover:underline hover:underline-offset-4"
                       >
                         Forgot your password?
                       </Link>
                     </div>
-                    <Input
-                      id="password"
-                      type="password"
-                      autoComplete="off"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="********"
-                      {...field}
-                    />
-                    {/* <PasswordInput
-                      id="password"
+                    <PasswordInput
+                      id="confirmPassword"
                       aria-invalid={fieldState.invalid}
                       inputMode="numeric" // show numeric keyboard on mobile
+                      // minLength={6}
+                      // maxLength={6}
                       placeholder="*********"
                       autoComplete="off"
                       {...field}
-                    /> */}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -119,18 +191,17 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<"div">) => {
             <div className="grid gap-4">
               <Button
                 type="submit"
-                // disabled={isSubmitting}
-                className="mt-4 w-full cursor-pointer duration-200 active:ring-1 active:ring-gray-500"
+                disabled={isPending}
+                className="mt-4 w-full cursor-pointer duration-200 active:ring-1 active:ring-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {/* {isSubmitting ? (
+                {isPending ? (
                   <>
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
-                    <span className="animate-pulse">Submitting...</span>
+                    <span className="animate-pulse">Signing In...</span>
                   </>
                 ) : (
                   "Sign In"
-                              )} */}
-                Sign In
+                )}
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-background text-muted-foreground relative z-10 px-2">

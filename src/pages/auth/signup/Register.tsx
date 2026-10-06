@@ -2,13 +2,13 @@ import { Icons } from "@/components/Icons";
 import { siteConfig } from "@/config/site";
 import { Link } from "react-router";
 import Banner from "@/data/images/house.webp";
-import LoginForm from "@/components/auth/LoginForm";
+import RegisterForm from "@/components/auth/signup/RegisterForm";
 import SEOHead from "@/components/MetaTagsHead/SEOHead";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   return (
     <>
-      <SEOHead title="Login" />
+      <SEOHead title="Register" />
       <div className="relative min-h-screen w-full lg:grid lg:grid-cols-2">
         <div className="flex flex-col px-6 py-8 sm:px-10 md:px-12 lg:px-16">
           <div>
@@ -25,8 +25,12 @@ const LoginPage = () => {
             </Link>
           </div>
 
-          <div className="mt-8 flex w-full justify-center sm:mt-12 md:mt-16 lg:mt-20">
-            <LoginForm />
+          <div className="mt-6 flex w-full justify-center sm:mt-12">
+            {/* register with phone */}
+            <RegisterForm />
+
+            {/* register with email  */}
+            {/* <RegisterWithEmailForm /> */}
           </div>
         </div>
 
@@ -42,4 +46,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
