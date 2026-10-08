@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { createBrowserRouter } from "react-router";
+import { Navigate, createBrowserRouter } from "react-router";
 
 import RootLayout from "@/components/layouts/RootLayout";
 import AboutPage from "@/pages/About";
@@ -32,6 +32,9 @@ import {
 import GuestGuard from "./pages/protector/GuestGuard";
 import AuthGuard from "./pages/protector/AuthGuard";
 import { confirmPasswordLoader, otpLoader } from "./router/loader/loaderIndex";
+import EditProfilePage from "./pages/settings/EditProfile";
+import AccountSettingRootLayout from "./pages/settings/AccountSettingRootLayout";
+import PasswordSecurity from "./pages/settings/PasswordSecurity";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +52,19 @@ const router = createBrowserRouter([
             element: <HomePage />,
           },
           { path: "about", element: <AboutPage /> },
+
+          // Account settings
+          {
+            path: "account-setting",
+            element: <AccountSettingRootLayout />,
+            // loader: accountSettingLoader,
+            children: [
+              { index: true, element: <Navigate to="edit-profile" replace /> },
+              { path: "edit-profile", element: <EditProfilePage /> },
+              { path: "password-security", element: <PasswordSecurity /> },
+            ],
+          },
+
           {
             path: "blogs",
             element: (

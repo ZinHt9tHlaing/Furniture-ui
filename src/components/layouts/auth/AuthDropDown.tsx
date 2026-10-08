@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import type { User } from "@/types/user-type";
+// import type { User } from "@/types/user-type";
 import { Icons } from "@/components/Icons";
 
 import { Button } from "@/components/ui/button";
@@ -18,15 +18,26 @@ import { toast } from "sonner";
 import { useLogoutMutation } from "@/features/hooks/auth.queries";
 import { AxiosError } from "axios";
 import useAuthGuardStore from "@/store/auth/authGuardStore";
+import type { GetUserInfoResponse } from "@/features/types/responses/profile.response.types";
+import { UserRole } from "@/types/enum";
 
 interface UserProps {
-  user: User;
+  user: GetUserInfoResponse["userInfo"] | undefined;
+  isLoading?: boolean;
 }
 
-const AuthDropDown = ({ user }: UserProps) => {
+const AuthDropDown = ({ user, isLoading }: UserProps) => {
   const navigate = useNavigate();
   const clearUserInfo = useAuthGuardStore((state) => state.clearUserInfo);
   const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
+
+  if (isLoading) {
+    return (
+      <Avatar className="relative size-8">
+        <Loader2 className="size-5 text-gray-300 dark:text-gray-600  animate-spin top-1.5 left-1.5 absolute rounded-full" />
+      </Avatar>
+    );
+  }
 
   const logoutHandler = () => {
     logout(undefined, {
@@ -72,8 +83,11 @@ const AuthDropDown = ({ user }: UserProps) => {
         }
       >
         <Avatar className={"size-8"}>
-          <AvatarImage src={user.imageUrl} alt={user.username ?? ""} />
-          <AvatarFallback>{initialName}</AvatarFallback>
+          <AvatarImage
+            src={user.image?.image_url ?? ""}
+            alt={user.fullName ?? ""}
+          />
+         <AvatarFallback delay={600}>{initialName}</AvatarFallback>
         </Avatar>
 
         {/* loading state */}
@@ -88,7 +102,7 @@ const AuthDropDown = ({ user }: UserProps) => {
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
               <p className="text-sm leading-none font-medium">{`${user.firstName} ${user.lastName}`}</p>
-              <p className="text-muted-foreground text-sm leading-none">
+              <p className="text-muted-foreground text-xs leading-none">
                 {user.email}
               </p>
             </div>
@@ -96,22 +110,36 @@ const AuthDropDown = ({ user }: UserProps) => {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          {/* Dashboard */}
+          {(user.role === UserRole.ADMIN || user.role === UserRole.AUTHOR) && (
+            <DropdownMenuItem
+              className="group"
+              render={
+                <a
+                  href={
+                    user.role === UserRole.ADMIN ||
+                    user.role === UserRole.AUTHOR
+                      ? "http://127.0.0.1:8000/dashboard"
+                      : "#"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icons.dashboard
+                    className="mr-2 size-4 transition-all duration-300 ease-in-out group-hover:scale-110"
+                    aria-hidden="true"
+                  />
+                  Dashboard
+                  {/* <DropdownMenuShortcut>⇧⌘D</DropdownMenuShortcut> */}
+                </a>
+              }
+            />
+          )}
+
+          {/* Settings */}
           <DropdownMenuItem
-            className="group"
             render={
-              <Link to="#">
-                <Icons.dashboard
-                  className="mr-2 size-4 transition-all duration-300 ease-in-out group-hover:scale-110"
-                  aria-hidden="true"
-                />
-                Dashboard
-                {/* <DropdownMenuShortcut>⇧⌘D</DropdownMenuShortcut> */}
-              </Link>
-            }
-          />
-          <DropdownMenuItem
-            render={
-              <Link to="/account-setting/password-security">
+              <Link to="/account-setting">
                 <Icons.gear
                   className="mr-2 size-4 transition-all duration-300 ease-in-out group-hover:rotate-90"
                   aria-hidden="true"
@@ -125,6 +153,7 @@ const AuthDropDown = ({ user }: UserProps) => {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
 
+        {/* Log out */}
         <DropdownMenuItem
           variant="destructive"
           disabled={isLoggingOut}

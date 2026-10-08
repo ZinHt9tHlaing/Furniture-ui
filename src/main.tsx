@@ -7,6 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "./components/theme/theme-provider";
 import { Toaster } from "./components/ui/sonner";
 import ReactQueryProvider from "./providers/ReactQueryProvider";
+import 'react-image-crop/dist/ReactCrop.css'
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
