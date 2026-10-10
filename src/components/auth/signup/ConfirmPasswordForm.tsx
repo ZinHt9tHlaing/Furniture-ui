@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/field";
 import PasswordInput from "../password-input";
 import { confirmPasswordSchema } from "@/schema/authSchema";
+import { Input } from "@/components/ui/input";
 
 type formSchema = z.infer<typeof confirmPasswordSchema>;
 
@@ -36,16 +37,14 @@ function ConfirmPasswordForm({
   const form = useForm<formSchema>({
     resolver: zodResolver(confirmPasswordSchema),
     defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
   function onSubmit(values: formSchema) {
-    if (values.password !== values.confirmPassword) {
-      setClientError("Passwords do not match!");
-      return;
-    }
     setClientError(null);
     submit(values, { method: "post", action: "/register/confirm-password" });
   }
@@ -66,14 +65,81 @@ function ConfirmPasswordForm({
             </Link>
             <h1 className="text-xl font-bold">Please confirm your password</h1>
             <div className="text-center text-sm">
-              Passwords must be at least 6 characters and they
-              must match.
+              Enter your information below to create a new account
             </div>
           </div>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FieldGroup>
+                  {/* first name */}
+                  <Controller
+                    name="firstName"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                        <Input
+                          id="firstName"
+                          type="text"
+                          aria-invalid={fieldState.invalid}
+                          placeholder="First Name"
+                          {...field}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+
+                  {/* last name */}
+                  <Controller
+                    name="lastName"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                        <Input
+                          id="lastName"
+                          type="text"
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Last Name"
+                          {...field}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+
+                  {/* email */}
+                  <Controller
+                    name="email"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <div className="flex items-center gap-1">
+                          <FieldLabel htmlFor="email">Email</FieldLabel>
+                          <p className="text-muted-foreground text-xs">
+                            (optional)
+                          </p>
+                        </div>
+                        <Input
+                          id="email"
+                          type="email"
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Email"
+                          {...field}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+
                   {/* password */}
                   <Controller
                     name="password"
@@ -86,43 +152,6 @@ function ConfirmPasswordForm({
                         <FieldLabel htmlFor="password">Password</FieldLabel>
                         <PasswordInput
                           id="password"
-                          aria-invalid={fieldState.invalid}
-                          inputMode="numeric" // show numeric keyboard on mobile
-                          // minLength={6}
-                          // maxLength={6}
-                          placeholder="*********"
-                          autoComplete="off"
-                          {...field}
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-
-                  {/* confirm password */}
-                  <Controller
-                    name="confirmPassword"
-                    control={form.control}
-                    render={({ field, fieldState }) => (
-                      <Field
-                        data-invalid={fieldState.invalid}
-                        className="space-y-1"
-                      >
-                        <div className="flex items-center">
-                          <FieldLabel htmlFor="confirmPassword">
-                            Confirm Password
-                          </FieldLabel>
-                          <Link
-                            to="/forgot-password"
-                            className="ml-auto inline-block text-sm hover:underline hover:underline-offset-4"
-                          >
-                            Forgot your password?
-                          </Link>
-                        </div>
-                        <PasswordInput
-                          id="confirmPassword"
                           aria-invalid={fieldState.invalid}
                           inputMode="numeric" // show numeric keyboard on mobile
                           // minLength={6}

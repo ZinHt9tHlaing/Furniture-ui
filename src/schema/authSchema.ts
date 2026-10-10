@@ -96,25 +96,23 @@ export const otpSchema = z.object({
     .regex(/^\d+$/, "Password must be numbers."),
 });
 
-export const confirmPasswordSchema = z
-  .object({
-    password: z
-      .string()
-      // .length(6, "Password must be 6 characters.") // cleaner than .min(6).max(6)
-      .min(6, "Password must be 6 characters.")
-      .regex(
-        /^[a-zA-Z0-9]+$/,
-        "Password must contain only letters and numbers."
-      ),
-    confirmPassword: z
-      .string()
-      .min(6, "Password must be 6 characters.")
-      .regex(
-        /^[a-zA-Z0-9]+$/,
-        "Confirm Password must contain only letters and numbers."
-      ),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match!",
-    path: ["confirmPassword"],
-  });
+export const confirmPasswordSchema = z.object({
+  firstName: z
+    .string()
+    .nonempty({ message: "First name is required!" })
+    .min(3, { message: "First name must be at least 3 characters long!" }),
+  lastName: z
+    .string()
+    .nonempty({ message: "Last name is required!" })
+    .min(3, { message: "Last name must be at least 3 characters long!" }),
+  email: z
+    .string()
+    .trim()
+    .pipe(z.union([z.email(), z.literal("")])) // allow empty string
+    .optional(),
+  password: z
+    .string()
+    // .length(6, "Password must be 6 characters.") // cleaner than .min(6).max(6)
+    .min(6, "Password must be 6 characters.")
+    .regex(/^[a-zA-Z0-9]+$/, "Password must contain only letters and numbers."),
+});

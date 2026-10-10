@@ -88,7 +88,7 @@ const EmailUpdateForm = ({ email }: EmailUpdateFormProps) => {
               <Input
                 {...register("email")}
                 id="email"
-                placeholder="example@eshop.com"
+                placeholder="example.com"
                 className="rounded-md border-2 border-gray-200 py-4.5 pr-10 text-sm"
               />
               {errors.email && <FieldError errors={[errors.email]} />}

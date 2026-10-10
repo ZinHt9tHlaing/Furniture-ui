@@ -12,8 +12,9 @@ export interface VerifyOtpRequest extends RegisterRequest {
 }
 
 export interface ConfirmPasswordRequest extends RegisterRequest {
+  firstName: string;
+  lastName: string;
+  email?: string|null;
   password: string;
   token: string;
 }
-
-

@@ -83,6 +83,9 @@ export const confirmPasswordAction = async ({
   const formData = await request.formData();
 
   const credentials: ConfirmPasswordRequest = {
+    firstName: (formData.get("firstName") as string)?.trim(),
+    lastName: (formData.get("lastName") as string)?.trim(),
+    email: (formData.get("email") as string)?.trim() || undefined,
     phone: store.phone as string,
     password: formData.get("password") as string,
     token: store.token as string,
